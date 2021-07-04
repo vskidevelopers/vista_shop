@@ -1,0 +1,84 @@
+{% extends "shop/main.html" %}
+{% load crispy_forms_tags %}
+{% block head_title %}Payment{% endblock %}
+
+{% block extra_head %}
+
+
+<style> 
+.custom-control-input {
+    position: absolute;
+    z-index: 100;
+    opacity: 1;
+    border-radius: 10px;
+    width: 65%;
+    height: 35px;
+    border: .4px;
+    
+} 
+
+#submit_payment{
+    border: none;
+    border-radius: 4px;
+    outline: none;
+    text-decoration: none;
+    color: #fff;
+    background: #32325d;
+    white-space: nowrap;
+    display: inline-block;
+    height: 40px;
+    line-height: 40px;
+    box-shadow: 0 4px 6px rgba(50, 50, 93, .11), 0 1px 3px rgba(0, 0, 0, .08);
+    border-radius: 4px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.025em;
+    text-decoration: none;
+    -webkit-transition: all 150ms ease;
+    transition: all 150ms ease;
+    float: right;
+    width: 45%;
+    }
+
+    #submit_payment:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 7px 14px rgba(50, 50, 93, .10), 0 3px 6px rgba(0, 0, 0, .08);
+        background-color: rgb(4, 247, 4);
+    }
+</style>
+{% endblock extra_head %}
+
+{% block body_block %}
+<!--Main layout-->
+<main>
+    <div class="container wow fadeIn">
+        <h2 class="my-5 h2 text-center">Payment form</h2>
+        <div class="row">
+            <div class="col-md-8 mb-4">
+
+                <!--Card-->
+                <div class="card" style="width: 0 auto;" >
+                    <form  method="post" id="payment-form">
+                        {% csrf_token %}
+
+                        
+                                {{ form.phone_number }}
+                                <label for="phone_number"></label>
+                        <!-- <input type="text" placeholder="Eg: 25412345678" class="custom-control-input"> -->
+                        <button id="submit_payment" class=" col-md-4 col-sm-12">Submit Payment</button>
+                    </form>
+
+                </div>
+                <!--/.Card-->
+
+            </div>
+        </div>
+    </div>
+</main>
+<!--Main layout-->
+{% endblock %}
+
+
+{% block extra_scripts %}
+
+{% endblock extra_scripts %}

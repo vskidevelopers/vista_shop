@@ -1,0 +1,15 @@
+ansicon @ file:///D:/bld/ansicon_1610117477004/work
+asgiref==3.3.1
+backports.functools-lru-cache==1.6.1
+blessed==1.17.6
+certifi==2020.12.5
+Django==3.1.7
+inquirer @ file:///home/conda/feedstock_root/build_artifacts/inquirer_1591715285996/work
+jinxed @ file:///D:/bld/jinxed_1610122991191/work
+python-editor==1.0.4
+pytz==2021.1
+readchar==2.0.1
+six @ file:///home/conda/feedstock_root/build_artifacts/six_1590081179328/work
+sqlparse==0.4.1
+wcwidth @ file:///home/conda/feedstock_root/build_artifacts/wcwidth_1600965781394/work
+wincertstore==0.2

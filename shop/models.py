@@ -118,10 +118,3 @@ class Billing_Address(models.Model):
         return self.user.username
 
 
-class Payment(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                            on_delete=models.CASCADE)
-    phone_number = models.CharField(max_length=15)
-
-    def __str__(self):
-        return self.user.username

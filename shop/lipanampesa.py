@@ -2,15 +2,16 @@
 # import json
 
 # import base64
-# from datetime import datetime
+from datetime import datetime
 # from . import keys
 # # from .keys import consumer_key, consumer_secret, phone_number, shodecode,business_short_code, lipa_na_mpesa_passkey
 # from requests.auth import HTTPBasicAuth
 
-# unformatted_time = datetime.now()
-# formatted_time = unformatted_time.strftime("%Y%m%d%H%M%S")
+unformatted_time = datetime.now()
+formatted_time = unformatted_time.strftime("%Y%m%d%H%M%S")
+print(unformatted_time, "This is the unformatted time")
+print(formatted_time, "This is the formatted time")
 
-# # print(formatted_time, "This is the formatted time")
 
 # data_to_encode = keys.business_short_code + keys.lipa_na_mpesa_passkey + formatted_time
 # encoded_data = base64.b64encode(data_to_encode.encode())

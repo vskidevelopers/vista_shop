@@ -6,8 +6,9 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import TemplateView, ListView, DetailView, UpdateView, CreateView, DeleteView, View
 from django.utils import timezone
 from .forms import CheckOutForm, PaymentForm
-from .models import Item, OrderItem, Order, Billing_Address, Payment
+from .models import Item, OrderItem, Order, Billing_Address
 from .keys import phone_number
+from mpesa.models import Payment
 # Create your views here.
 
 
@@ -20,8 +21,10 @@ class IndexView(ListView):
 class checkoutView(View):
     def get(self, *args, **kwargs):
         form = CheckOutForm()
+        order = Order.objects.get(user=self.request.user, ordered=False)
         context = {
-            "form": form
+            "form": form,
+            'order': order
         }
         return render(self.request, 'shop/checkout-page.html', context)
 
@@ -30,17 +33,17 @@ class checkoutView(View):
         try:
             order = Order.objects.get(user=self.request.user, ordered=False)
             if form.is_valid():
-                street_address = form, form.cleaned_data.get("street_address")
-                apartment_address = form, form.cleaned_data.get(
+                street_address = form.cleaned_data.get("street_address")
+                apartment_address = form.cleaned_data.get(
                     "apartment_address")
-                county = form, form.cleaned_data.get("county")
-                town = form, form.cleaned_data.get("town")
-                zip = form, form.cleaned_data.get("zip")
+                county = form.cleaned_data.get("county")
+                town = form.cleaned_data.get("town")
+                zip = form.cleaned_data.get("zip")
                 # TODO: add functionality to these fields
                 # same_shipping_address = form, form.cleaned_data.get(
                 #     "same_shipping_address")
                 # save_info = form, form.cleaned_data.get("save_info")
-                payment_option = form, form.cleaned_data.get(
+                payment_option =form.cleaned_data.get(
                     "payment_option")
                 billing_address = Billing_Address(
                     user=self.request.user,
@@ -65,24 +68,39 @@ class checkoutView(View):
 
 class PaymentView(View):
     def get(self, *args, **kwargs):
-        form = PaymentForm()
+        malipo = PaymentForm()
         context = {
-            "form": form
+            "form": malipo
         }
         return render(self.request, 'shop/payment.html', context)
 
     def post(self, *args, **kwargs):
-        form = PaymentForm(self.request.POST or None)
+        malipo= PaymentForm(self.request.POST or None)
         try:
             order = Order.objects.get(user=self.request.user, ordered=False)
-            if form.is_valid():
-                phone_number = form, cleaned_data.get("phone_number")
-            Payment.save()
+            if malipo.is_valid():
+                phone_number = malipo.cleaned_data.get("phone_number")
+                payment= Payment(
+                    user=self.request.user,
+                    phone_number=phone_number,
+                    amount=order.get_total()
+                )
+                payment.save()
+                order_items=order.items.all()
+                order_items.update(ordered=True)
+                for item  in order_items:
+                    item.save()
+                
+                order.ordered=True 
+                order.save()
+                messages.success(self.request, "Successfully sent Money to Vista")
+                return redirect("shop:home")
             messages.warning(self.request, "Failed payment Process")
             return redirect("shop:payment")
         except ObjectDoesNotExist:
             messages.error(self.request, "you dont have an active cart")
             return redirect("shop:payment")
+        
 
 
 class ItemDetailView(DetailView):

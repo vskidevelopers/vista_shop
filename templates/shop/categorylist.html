@@ -1,0 +1,232 @@
+{% extends "shop/main.html" %} 
+{% load static %}
+{% block head_title %}
+Category
+{% endblock %}
+
+{% block styles %}
+.swiper-container {
+    width: 100%;
+    height: 80%;
+}
+
+.swiper-slide {
+    text-align: center;
+    font-size: 18px;
+    background: #fff;
+
+    /* Center slide text vertically */
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+}
+
+.slider_overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    background: #000;
+    z-index: 2;
+    opacity: 0.4;
+}
+.slider_content {
+    position: relative;
+    width: 100%;
+    top: 50%;
+    -webkit-transform: translate(0, -50%);
+    transform: translate(0, -50%);
+    -webkit-transition: all 0.3s;
+    transition: all 0.3s;
+    z-index: 10;
+}
+.swiper-container {
+    padding-left: 3rem;
+}
+
+@media(max-width:740px){
+    .swiper-container {
+        padding: 0;
+    }
+}
+{% endblock %}
+
+{% block body_block %}
+
+
+<div class="swiper-container">
+    <div class="swiper-wrapper">
+        {% for slider in product %}
+        <div class="swiper-slide" style="background-image: url('{{ slider.imageURL}}');
+        background-position: center;
+        background-size: contain;
+        background-repeat: no-repeat;">
+        <div class="slider_overlay"></div>
+        <div class="slider_content">
+            <div class="container clearfix">
+                <div class="row" style="justify-content: center;" >
+                <div class="text-center white-text mx-5 wow fadeIn">
+                    <h1 class="mb-4 text-center">
+                        <strong>{{slider.title}}</strong>
+                    </h1>
+                    <p class="mb-4 d-none d-md-block">
+                        {% if slider.discount_price %}
+                <strong>
+                Ksh {{ slider.discount_price }} 
+                </strong>
+                {%else %} 
+                <strong>
+                Ksh {{ slider.price }} 
+            </strong>
+                {% endif %}
+            </p>
+        
+                    <a
+                        target="_blank"
+                        href="{{slider.get_absolute_url}}"
+                        class="btn btn-outline-white btn-md"
+                        style="border-radius: 40px;"
+                        >Add to Cart
+                        <i class="fa fa-shopping-basket" aria-hidden="true"></i>
+                    </a>
+                </div>
+                </div>
+                </div>
+                </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+
+    <!-- Add Arrows -->
+    <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
+</div>    
+
+    <div class="container">
+<nav class="navbar navbar-expand-lg navbar-dark mdb-color lighten-3 mt-3 mb-5"
+    >
+        <span class="navbar-brand">Categories:</span>
+        <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#basicExampleNav"
+        aria-controls="basicExampleNav"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+        >
+        <span class="navbar-toggler-icon"></span>
+        </button>
+
+    <div class="collapse navbar-collapse" id="basicExampleNav">
+        
+        <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+            <a class="nav-link" href="{% url 'shop:home' %}"
+            >All
+            <span class="sr-only">(current)</span>
+            </a>
+            
+        </li>
+        
+        {% for category in categories %}
+        <li class="nav-item">
+            <a class="nav-link" href="{{ category.get_absolute_url }}">{{category.name }}</a>
+        </li>
+        {% endfor %}
+        </ul>
+        <form class="form-inline">
+        <div class="md-form my-0">
+            <input
+                class="form-control mr-sm-2"
+                type="text"
+                placeholder="Search"
+                aria-label="Search"
+            />
+        </div>
+        </form>
+    </div>
+    </nav>
+
+    <!--Section: Products v.3-->
+    <section class="text-center mb-4">
+        <!--Grid row-->
+        <div class="row wow fadeIn">
+            {% for item in product %}
+    <div class="col-lg-3 col-md-6 mb-4">
+        <div class="card">
+        <!--Card image-->
+            <div class="view overlay col-12">
+                <img
+                src="{{ item.imageURL }}"
+                class="card-img-top"
+                alt=""
+                style="height:150px"
+                />
+                <a href="{{ item.get_absolute_url }}">
+                <div class="mask rgba-white-slight"></div>
+                </a>
+            </div>
+        <!--Card image-->
+
+        <!--Card content-->
+            <div class="card-body text-center" style="height:150px">
+                <!--Category & Title-->
+                <a href="" class="grey-text">
+                <!-- <h5>{{ item.get_category_display }}</h5> -->
+                <h5>{{ item.category.name }}</h5>
+                </a>
+                <h5>
+                <strong>
+                    <a href="{{ item.get_absolute_url }}" class="dark-grey-text"
+                    >{{ item.title }}
+                    <!-- <span
+                        class="badge badge-pill {{ item.get_label_display }}-color">
+                        NEW
+                    </span> -->
+                    {% if item.get_label_display == "primary" %}
+                        <span class="badge badge-pill {{ item.get_label_display}}-color"> HOT</span>
+                    {% elif item.get_label_display == "danger" %}
+                    <span class="badge badge-pill {{ item.get_label_display }}-color">NEW</span>
+                    {% elif item.get_label_display == "secondary" %}
+                    <span class="badge badge-pill {{ item.get_label_display }}-color">SALE</span>
+                    {% else %}
+                    <span class="badge badge-pill {{ item.get_label_display }}-color">Offer</span>
+                    {% endif %}
+                    </a>
+                </strong>
+                </h5>
+
+                <h4 class="font-weight-bold blue-text">
+                
+                {% if item.discount_price %}
+                <strong>
+                Ksh {{ item.discount_price }} 
+                </strong>
+                {%else %} 
+                <strong>
+                Ksh {{ item.price }} 
+            </strong>
+                {% endif %}
+                </strong>
+                </h4>
+            </div>
+        <!--Card content-->
+        </div>
+        
+    </div>
+    {% endfor %}
+    </div>
+    </section>
+    </div>
+{% endblock %}

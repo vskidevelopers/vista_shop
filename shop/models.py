@@ -21,13 +21,30 @@ LABEL_CHOICES = (
     ('SS', 'success')
 )
 
+class Category(models.Model):
+
+    name = models.CharField(max_length=100, blank=True, null=True)
+    slug=models.SlugField(unique=True)
+
+    class Meta:
+        verbose_name = ("Category")
+        verbose_name_plural = ("Categories")
+
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse("shop:category", args=[self.slug])
+
 
 class Item(models.Model):
     title = models.CharField(max_length=128)
     price = models.FloatField()
     discount_price = models.FloatField(blank=True, null=True)
-    category = models.CharField(choices=CATEGORY_CHOICES, max_length=2)
-    label = models.CharField(choices=LABEL_CHOICES, max_length=2)
+    # category = models.CharField(choices=CATEGORY_CHOICES, max_length=2)
+    category=models.ForeignKey(Category, on_delete=models.CASCADE)
+    label = models.CharField(choices=LABEL_CHOICES, max_length=2, null=True, blank=True)
     slug = models.SlugField()
     description = models.TextField()
     image = models.ImageField(upload_to='images', height_field=None,
@@ -50,6 +67,8 @@ class Item(models.Model):
         return reverse("shop:remove_from_cart", kwargs={
             'slug': self.slug
         })
+
+
 
     @property
     def imageURL(self):
@@ -116,5 +135,9 @@ class Billing_Address(models.Model):
 
     def __str__(self):
         return self.user.username
+    class Meta:
+        verbose_name = ("Billing_Address")
+        verbose_name_plural = ("Billing_Addresses")
+
 
 

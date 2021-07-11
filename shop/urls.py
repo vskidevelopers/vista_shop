@@ -6,7 +6,9 @@ from .views import (
     add_to_cart, remove_from_cart,
     IndexView,
     cartView,
-    remove_single_item_from_cart
+    remove_single_item_from_cart,
+    # category,
+    CategoryView
 )
 
 app_name = 'shop'
@@ -20,4 +22,6 @@ urlpatterns = [
     path('cart/', cartView.as_view(), name='cart'),
     path('payment/<payment_option>/', PaymentView.as_view(), name='payment'),
     path('remove_single_item_from_cart/<slug>/', remove_single_item_from_cart, name='remove_single_item_from_cart'),
+    # path('category/<str:category_slug>/', category, name='category_detail'),
+    path('<str:cats>/', CategoryView, name='category')
 ]

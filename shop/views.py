@@ -6,7 +6,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import TemplateView, ListView, DetailView, UpdateView, CreateView, DeleteView, View
 from django.utils import timezone
 from .forms import CheckOutForm, PaymentForm
-from .models import Item, OrderItem, Order, Billing_Address
+from .models import Item, OrderItem, Order, Billing_Address, Category
 from .keys import phone_number
 from mpesa.models import Payment
 # Create your views here.
@@ -16,6 +16,12 @@ class IndexView(ListView):
     model = Item
     paginate_by = 8
     template_name = 'shop/home-page.html'
+    queryset=Item.objects.all()
+    def get_context_data(self, **kwargs):
+        context = super(IndexView, self).get_context_data(**kwargs)
+        context['categories']= Category.objects.all()
+        return context
+
 
 
 class checkoutView(View):
@@ -210,3 +216,18 @@ def remove_single_item_from_cart(request, slug):
     else:
         messages.info(request, 'You Do Not Have an Active Order')
         return redirect('shop:cart', slug=slug)
+
+def CategoryView(request, cats):
+    product=Item.objects.all()
+    categories=Category.objects.all()
+    category=get_object_or_404(Category, slug=cats)
+    product=product.filter(category=category)
+    product_slider=product.order_by('id')[:5]
+    context={
+        "category":category,
+        "categories":categories,
+        "product":product,
+        "cats": cats, 
+        "product_slider":product_slider
+    }
+    return  render(request, 'shop/categorylist.html', context)

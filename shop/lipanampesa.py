@@ -3,7 +3,8 @@ import json
 
 import base64
 from datetime import datetime
-from . import keys
+
+import keys
 # from . import keys
 # from .keys import consumer_key, consumer_secret, phone_number, shodecode,business_short_code, lipa_na_mpesa_passkey
 from requests.auth import HTTPBasicAuth
@@ -18,7 +19,7 @@ data_to_encode = keys.business_short_code + keys.lipa_na_mpesa_passkey + formatt
 encoded_data = base64.b64encode(data_to_encode.encode())
 
 decoded_password = encoded_data.decode("utf-8")
-print(decoded_password)
+print("decoded_password", decoded_password)
 
 consumer_key = keys.consumer_key
 consumer_secret = keys.consumer_secret
@@ -27,7 +28,8 @@ api_URL = "https://sandbox.safaricom.co.ke/oauth/v1/generate?grant_type=client_c
 r = requests.get(api_URL, auth=HTTPBasicAuth(
     consumer_key, consumer_secret))
 
-json_response = json.loads(r.text)
+json_response = r.json()
+# json_response = json.loads(r.text)
 print(json_response)
 print("json:", json_response)
 my_access_token = json_response['access_token']
